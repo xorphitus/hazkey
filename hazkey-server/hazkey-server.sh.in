@@ -20,26 +20,4 @@ if [ -f "$ENV_FILE" ]; then
     source "$ENV_FILE"
 fi
 
-if [ -z "$LIBLLAMA_PATH" ]; then
-    LIBLLAMA_PATH="$XDG_DATA_HOME/hazkey/zenzai/llama/libllama.so"
-fi
-
-# Check if libllama.so exists
-if [ -f "$LIBLLAMA_PATH" ]; then
-    # Check for missing dependencies using ldd
-    MISSING_DEPS=$(LC_ALL=C ldd "$LIBLLAMA_PATH" 2>/dev/null | grep "not found")
-
-    if [ -n "$MISSING_DEPS" ]; then
-        # Log missing dependencies
-        echo "Warning: libllama.so has missing dependencies:" >&2
-        echo "$MISSING_DEPS" >&2
-        echo "Starting hazkey-server without LD_PRELOAD..." >&2
-    else
-        # Execute hazkey-server with LD_PRELOAD
-        export LD_PRELOAD="$LIBLLAMA_PATH"
-    fi
-else
-    echo "Starting hazkey-server without LD_PRELOAD..." >&2
-fi
-
 exec "@CMAKE_INSTALL_FULL_LIBDIR@/hazkey/hazkey-server" "$@"

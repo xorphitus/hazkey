@@ -11,10 +11,17 @@ let package = Package(
             name: "hazkey-server",
             targets: ["hazkey-server"])
     ],
+    traits: [
+        .trait(
+            name: "Zenzai",
+            enabledTraits: ["Zenzai"]
+        ),
+        .trait(name: "default", enabledTraits: []),
+    ],
     dependencies: [
         .package(
             url: "https://github.com/7ka-hiira/AzooKeyKanaKanjiConverter",
-            branch: "8844d4c",
+            branch: "87b5ff5",
             traits: [.trait(name: "Zenzai")]),
         .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.27.0"),
     ],
@@ -34,9 +41,7 @@ let package = Package(
             ],
             swiftSettings: [.interoperabilityMode(.Cxx)],
             linkerSettings: [
-                .unsafeFlags(["-L", "llama-stub"]),
-                .unsafeFlags(["-Xlinker", "-rpath", "-Xlinker", "$ORIGIN/llama"]),
-                .unsafeFlags(["-Xlinker", "-rpath", "-Xlinker", "$ORIGIN/llama-stub"]),
+                .unsafeFlags(["-Xlinker", "-rpath", "-Xlinker", "$ORIGIN/libllama"])
             ],
         ),
         .testTarget(

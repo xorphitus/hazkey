@@ -4,3 +4,6 @@
 [submodule "hazkey-server/azooKey_dictionary_storage"]
 	path = hazkey-server/azooKey_dictionary_storage
 	url = https://github.com/azooKey/azooKey_dictionary_storage
+[submodule "hazkey-server/llama.cpp"]
+	path = hazkey-server/llama.cpp
+	url = https://github.com/7ka-hiira/llama.cpp.git

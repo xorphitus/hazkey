@@ -17,77 +17,99 @@ set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
 
 find_program(SWIFT_EXECUTABLE swift REQUIRED)
 
-option(SKIP_KKC_PATH_UPDATE "Skip updating path.swift" OFF)
-option(SKIP_INSTALL_DICTIONARY "Skip install dictionary" OFF)
+option(HAZKEY_SERVER_STATIC_SWIFT_STDLIB "Statically link swift standard libraries" ON)
 
-# ----- llama-stub ----- #
-add_subdirectory(llama-stub)
+option(HAZKEY_SERVER_ENABLE_ZENZAI "Enable Zenzai AI features" ON)
+option(HAZKEY_SERVER_BUILD_LLAMA_LIBS "Build llama.cpp libraries" ${HAZKEY_SERVER_ENABLE_ZENZAI})
+option(HAZKEY_SERVER_INSTALL_LLAMA_LIBS "Install llama.cpp libraries" ${HAZKEY_SERVER_BUILD_LLAMA_LIBS})
+option(HAZKEY_SERVER_ZENZAI_TRAIT "Enable Zenzai trait in AzooKeyKanaKanjiConverter" ${HAZKEY_SERVER_ENABLE_ZENZAI})
+
+set(HAZKEY_SERVER_SYSTEM_RESOURCE_PATH "${CMAKE_INSTALL_FULL_DATADIR}" CACHE PATH "System Resource path")
+option(HAZKEY_SERVER_INSTALL_DICTIONARY "Install dictionary" ON)
+
+# TODO: check path reliability
+set(HAZKEY_SERVER_LIBLLAMA_BINDIR "${CMAKE_CURRENT_BINARY_DIR}/bin" CACHE PATH "Llama.cpp library directory" )
 
 # --- hazkey-server --- #
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(SWIFT_BUILD_TYPE "debug")
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(_DEFAULT_SWIFT_TYPE "debug")
 else()
-    set(SWIFT_BUILD_TYPE "release")
+    set(_DEFAULT_SWIFT_TYPE "release")
 endif()
+set(SWIFT_BUILD_TYPE "${_DEFAULT_SWIFT_TYPE}" CACHE STRING "Swift build type (debug/release)")
 
-if(NOT SKIP_KKC_PATH_UPDATE)
-    message(STATUS "Updating path.swift")
-    # write path.swift
-    file(WRITE ${CMAKE_CURRENT_SOURCE_DIR}/Sources/hazkey-server/path.swift "let systemResourcePath: String = \"${CMAKE_INSTALL_FULL_DATADIR}/hazkey\"")
-endif()
+message(STATUS "Configuring path.swift")
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/Sources/hazkey-server/path.swift.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/Sources/hazkey-server/path.swift
+    @ONLY
+)
 
 # Auto detect swift library path
 # To bypass issue swiftlang/swift#78003
-execute_process(
-    COMMAND which swift
-    OUTPUT_VARIABLE swift_path_raw
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-    RESULT_VARIABLE which_result
-)
-if(which_result EQUAL 0)
-    execute_process(
-        COMMAND readlink -f "${swift_path_raw}"
-        OUTPUT_VARIABLE swift_path_resolved
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-        RESULT_VARIABLE readlink_result
-    )
-    if(readlink_result EQUAL 0)
-        # set relative path from swift binary
-        if("${swift_path_resolved}" MATCHES "/bin/swift[^/]*$")
-            string(REGEX REPLACE "/bin/swift[^/]*$" "" swift_base_dir "${swift_path_resolved}")
-            set(SWIFT_DETECTED_LIB_PATH "${swift_base_dir}/lib/swift/linux")
+if(HAZKEY_SERVER_STATIC_SWIFT_STDLIB AND NOT SWIFT_DYNAMIC_LIB_PATH)
+    if(SWIFT_EXECUTABLE)
+        get_filename_component(SWIFT_REAL_PATH "${SWIFT_EXECUTABLE}" REALPATH)
 
-            message(STATUS "Detected Swift library path: ${SWIFT_DETECTED_LIB_PATH}")
+        if("${SWIFT_REAL_PATH}" MATCHES "/bin/swift[^/]*$")
+            get_filename_component(SWIFT_BIN_DIR "${SWIFT_REAL_PATH}" DIRECTORY)
+            get_filename_component(SWIFT_BASE_DIR "${SWIFT_BIN_DIR}" DIRECTORY)
+
+            set(SWIFT_DYNAMIC_LIB_PATH "${SWIFT_BASE_DIR}/lib/swift/linux")
+            message(STATUS "Detected Swift dynamic library path: ${SWIFT_DYNAMIC_LIB_PATH}")
         else()
-            set(SWIFT_DETECTED_LIB_PATH "")
-            message(STATUS "Resolved swift path '${swift_path_resolved}' does not end with '/bin/swift*'. SWIFT_LIB_PATH not set.")
+            message(WARNING "Unexpected swift path structure: ${SWIFT_REAL_PATH}")
         endif()
     else()
-        set(SWIFT_DETECTED_LIB_PATH "")
-        message(WARNING "Failed to execute 'readlink -f' on '${swift_path_raw}'. SWIFT_LIB_PATH not set.")
+        message(WARNING "Swift executable not found in PATH.")
     endif()
-else()
-    set(SWIFT_DETECTED_LIB_PATH "")
-    message(WARNING "Swift executable not found using 'which swift'. SWIFT_LIB_PATH not set.")
 endif()
 
 add_custom_target(build_hazkey_server ALL
     COMMAND ${CMAKE_COMMAND}
-        -DSWIFT_BUILD_TYPE=${SWIFT_BUILD_TYPE}
-        -DSWIFT_EXECUTABLE=${SWIFT_EXECUTABLE}
-        -DSWIFT_DISABLE_DEPENDENCY_CACHE=${SWIFT_DISABLE_DEPENDENCY_CACHE}
-        -DSWIFT_DETECTED_LIB_PATH=${SWIFT_DETECTED_LIB_PATH}
-        -DSWIFT_LINK_PATH=${SWIFT_LINK_PATH}
-        -DSWIFT_WORK_DIR=${CMAKE_CURRENT_SOURCE_DIR}
-        -DLLAMA_STUB_DIR=${CMAKE_CURRENT_BINARY_DIR}/llama-stub
-        -P ${CMAKE_CURRENT_SOURCE_DIR}/build_swift.cmake
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        "-DSWIFT_BUILD_TYPE=${SWIFT_BUILD_TYPE}"
+        "-DSWIFT_EXECUTABLE=${SWIFT_EXECUTABLE}"
+        "-DSWIFT_STATIC_STDLIB=${HAZKEY_SERVER_STATIC_SWIFT_STDLIB}"
+        "-DSWIFT_DISABLE_DEPENDENCY_CACHE=${SWIFT_DISABLE_DEPENDENCY_CACHE}"
+        "-DSWIFT_DYNAMIC_LIB_PATH=${SWIFT_DYNAMIC_LIB_PATH}"
+        "-DSWIFT_LINK_PATH=${SWIFT_LINK_PATH}"
+        "-DSWIFT_WORK_DIR=${CMAKE_CURRENT_SOURCE_DIR}"
+        "-DHAZKEY_SERVER_ZENZAI_TRAIT=${HAZKEY_SERVER_ZENZAI_TRAIT}"
+        "-DLIBLLAMA_DIR=${HAZKEY_SERVER_LIBLLAMA_BINDIR}"
+        -P "${CMAKE_CURRENT_SOURCE_DIR}/build_swift.cmake"
+    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
     COMMENT "Building hazkey-server"
     VERBATIM
 )
 
-add_dependencies(build_hazkey_server llama)
+
+# ----- llama.cpp ----- #
+if(HAZKEY_SERVER_BUILD_LLAMA_LIBS)
+    if(CMAKE_BUILD_TYPE STREQUAL "Release")
+        set(GGML_LTO ON CACHE BOOL "")
+    endif()
+
+    set(CMAKE_INSTALL_RPATH "$ORIGIN")
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
+    set(CMAKE_SKIP_BUILD_RPATH OFF)
+    set(GGML_BACKEND_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/hazkey/libllama/backends/")
+
+    set(BUILD_SHARED_LIBS ON CACHE BOOL "")
+    set(LLAMA_CURL OFF CACHE BOOL "")
+    set(LLAMA_STANDALONE OFF CACHE BOOL "")
+    set(GGML_NATIVE OFF CACHE BOOL "")
+    set(GGML_BACKEND_DL ON CACHE BOOL "")
+    set(GGML_CPU_ALL_VARIANTS ON CACHE BOOL "")
+    set(GGML_CPU ON CACHE BOOL "")
+    set(GGML_VULKAN ON CACHE BOOL "")
+    set(GGML_CUDA OFF CACHE BOOL "")
+    set(GGML_HIP OFF CACHE BOOL "")
+    set(CMAKE_SKIP_BUILD_RPATH ON CACHE BOOL "")
+    add_subdirectory(llama.cpp EXCLUDE_FROM_ALL)
+
+    add_dependencies(build_hazkey_server llama)
+endif()
 
 # ---- install ---- #
 
@@ -105,9 +127,24 @@ configure_file(
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/hazkey-server
         DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 
-# install llama stub library
-install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/llama-stub/libllama.so
-        DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/hazkey/llama-stub)
+# install llama libraries
+if(HAZKEY_SERVER_INSTALL_LLAMA_LIBS)
+    install(FILES
+        "${HAZKEY_SERVER_LIBLLAMA_BINDIR}/libggml-base.so"
+        "${HAZKEY_SERVER_LIBLLAMA_BINDIR}/libggml.so"
+        "${HAZKEY_SERVER_LIBLLAMA_BINDIR}/libllama.so"
+        DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/hazkey/libllama"
+    )
+
+    install(DIRECTORY "${HAZKEY_SERVER_LIBLLAMA_BINDIR}/"
+        DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/hazkey/libllama/backends"
+        FILES_MATCHING
+        PATTERN "*.so"
+        PATTERN "libggml-base.so" EXCLUDE
+        PATTERN "libggml.so" EXCLUDE
+        PATTERN "libllama.so" EXCLUDE
+    )
+endif()
 
 # install icons
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/icons/hazkey.svg
@@ -126,7 +163,7 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/icons/hazkey_24x24.png
         DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/icons/hicolor/24x24/apps)
 
 # install dictionary
-if(NOT SKIP_INSTALL_DICTIONARY)
+if(HAZKEY_SERVER_INSTALL_DICTIONARY)
     install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/azooKey_dictionary_storage/Dictionary
         DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/hazkey)
 endif()

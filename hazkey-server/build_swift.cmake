@@ -6,28 +6,37 @@ set(SWIFT_LINK_PATH "${SWIFT_LINK_PATH}")
 set(SWIFT_WORK_DIR "${SWIFT_WORK_DIR}")
 set(LLAMA_STUB_DIR "${LLAMA_STUB_DIR}")
 
-
 set(SWIFT_COMMAND
-    ${SWIFT_EXECUTABLE} build -c ${SWIFT_BUILD_TYPE}
-    --scratch-path=${CMAKE_CURRENT_BINARY_DIR}/swift-build
-    -Xswiftc -static-stdlib
-    -Xlinker -L${LLAMA_STUB_DIR}
+    "${SWIFT_EXECUTABLE}"
+    "build" "-c" "${SWIFT_BUILD_TYPE}"
+    "--scratch-path=${CMAKE_CURRENT_BINARY_DIR}/swift-build"
 )
-if(SWIFT_DISABLE_DEPENDENCY_CACHE)
-    list(APPEND SWIFT_COMMAND --disable-dependency-cache)
+
+
+if(HAZKEY_SERVER_ZENZAI_TRAIT)
+    # TODO: hazkey-serverここにZenaiを有効にするオプションを入れる。無効化できるかチェック
+    list(APPEND SWIFT_COMMAND "-Xlinker" "-L${LIBLLAMA_DIR}")
 endif()
 
-if(SWIFT_DETECTED_LIB_PATH)
-    list(APPEND SWIFT_COMMAND -Xlinker -L${SWIFT_DETECTED_LIB_PATH})
+if(SWIFT_STATIC_STDLIB)
+    list(APPEND SWIFT_COMMAND "-Xswiftc" "-static-stdlib")
+
+    if(SWIFT_DYNAMIC_LIB_PATH)
+        list(APPEND SWIFT_COMMAND "-Xlinker" "-L${SWIFT_DYNAMIC_LIB_PATH}")
+    endif()
+endif()
+
+if(SWIFT_DISABLE_DEPENDENCY_CACHE)
+    list(APPEND SWIFT_COMMAND "--disable-dependency-cache")
 endif()
 
 if(SWIFT_LINK_PATH)
-    list(APPEND SWIFT_COMMAND -Xlinker -L${SWIFT_LINK_PATH})
+    list(APPEND SWIFT_COMMAND "-Xlinker" "-L${SWIFT_LINK_PATH}")
 endif()
 
 execute_process(
     COMMAND ${SWIFT_COMMAND}
-    WORKING_DIRECTORY ${SWIFT_WORK_DIR}
+    WORKING_DIRECTORY "${SWIFT_WORK_DIR}"
     RESULT_VARIABLE result
 )
 
@@ -35,7 +44,7 @@ execute_process(
 if(NOT result EQUAL 0)
     execute_process(
         COMMAND ${SWIFT_COMMAND}
-        WORKING_DIRECTORY ${SWIFT_WORK_DIR}
+        WORKING_DIRECTORY "${SWIFT_WORK_DIR}"
         RESULT_VARIABLE result2
     )
     if(NOT result2 EQUAL 0)

@@ -277,8 +277,9 @@ class HazkeyServerState {
 
         options.requireJapanesePrediction =
             is_suggest
-            && serverConfig.currentProfile.suggestionListMode
-                == Hazkey_Config_Profile.SuggestionListMode.suggestionListShowPredictiveResults
+                && serverConfig.currentProfile.suggestionListMode
+                    == Hazkey_Config_Profile.SuggestionListMode.suggestionListShowPredictiveResults
+            ? .autoMix : .disabled
         options.requireEnglishPrediction = options.requireJapanesePrediction
 
         var copiedComposingText = composingText.value

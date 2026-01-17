@@ -418,8 +418,8 @@ class HazkeyServerConfig {
         return ConvertRequestOptions.init(
             N_best: Int(currentProfile.numCandidatesPerPage),
             needTypoCorrection: false,
-            requireJapanesePrediction: false,
-            requireEnglishPrediction: false,
+            requireJapanesePrediction: .disabled,
+            requireEnglishPrediction: .disabled,
             keyboardLanguage: .none,
             englishCandidateInRoman2KanaInput: false,
             fullWidthRomanCandidate: true,
