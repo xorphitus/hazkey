@@ -376,7 +376,8 @@ class HazkeyServerConfig {
                         preference: currentProfile.zenzaiPreference,
                         leftSideContext: currentProfile.zenzaiContextualMode
                             ? leftContext : nil
-                    ))
+                    )),
+                deviceConfig: createDeviceConfig()
             )
         } else {
             return ConvertRequestOptions.ZenzaiMode.off

@@ -7,6 +7,7 @@ class HazkeyServer: SocketManagerDelegate {
     private let socketManager: SocketManager
     private let protocolHandler: ProtocolHandler
     private let llamaAvailable: Bool
+    private let ggmlBackendDevices: [GGMLBackendDevice]
     private let state: HazkeyServerState
 
     private let runtimeDir: String
@@ -19,15 +20,17 @@ class HazkeyServer: SocketManagerDelegate {
         self.uid = getuid()
         self.socketPath = "\(runtimeDir)/hazkey-server.\(uid).sock"
 
-        // Check if llama.cpp library is available
-        self.llamaAvailable = {
-            guard let handle = dlopen(nil, RTLD_NOW) else {
-                NSLog("Failed to dlopen current process")
-                return false
+        loadGGMLBackends()
+
+        ggmlBackendDevices = enumerateGGMLBackendDevices()
+        #if DEBUG
+            for device in ggmlBackendDevices {
+                NSLog(
+                    "GGML Backend Device: \(device.name), Type: \(device.type), Description: \(device.description)"
+                )
             }
-            defer { dlclose(handle) }
-            return dlsym(handle, "llama_lib_is_stub") == nil
-        }()
+        #endif
+        self.llamaAvailable = ggmlBackendDevices.count > 0
 
         // Initialize server state
         self.state = HazkeyServerState(llamaAvailable: llamaAvailable)

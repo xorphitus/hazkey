@@ -14,15 +14,13 @@ let package = Package(
     traits: [
         .trait(
             name: "Zenzai",
-            enabledTraits: ["Zenzai"]
-        ),
-        .trait(name: "default", enabledTraits: []),
+            enabledTraits: ["Zenzai"])
     ],
     dependencies: [
         .package(
             url: "https://github.com/7ka-hiira/AzooKeyKanaKanjiConverter",
-            branch: "87b5ff5",
-            traits: [.trait(name: "Zenzai")]),
+            branch: "49ddc9e",
+            traits: [.trait(name: "Zenzai", condition: .when(traits: ["Zenzai"]))]),
         .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.27.0"),
     ],
     targets: [

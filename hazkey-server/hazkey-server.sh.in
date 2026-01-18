@@ -1,14 +1,10 @@
 #!/usr/bin/env sh
 
 # hazkey-server wrapper script
-# Sets LD_PRELOAD to load libllama.so from XDG_DATA_HOME/hazkey/zenzai/llama/
-# and passes all arguments to hazkey-server
-# Checks for missing dependencies and falls back to running without LD_PRELOAD if needed
 
 if [ -z "$XDG_DATA_HOME" ]; then
     XDG_DATA_HOME="$HOME/.local/share"
 fi
-
 
 if [ -z "$XDG_CONFIG_HOME" ]; then
     XDG_CONFIG_HOME="$HOME/.config"

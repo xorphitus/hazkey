@@ -15,6 +15,7 @@ set(SWIFT_COMMAND
 
 if(HAZKEY_SERVER_ZENZAI_TRAIT)
     # TODO: hazkey-serverここにZenaiを有効にするオプションを入れる。無効化できるかチェック
+    list(APPEND SWIFT_COMMAND "--traits" "Zenzai")
     list(APPEND SWIFT_COMMAND "-Xlinker" "-L${LIBLLAMA_DIR}")
 endif()
 
