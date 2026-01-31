@@ -75,7 +75,6 @@ class HazkeyServerConfig {
             let systemZenzaiModelPath = URL(fileURLWithPath: systemResourcePath)
                 .appendingPathComponent("zenzai.gguf", isDirectory: false)
             let userZenzaiModelPath = HazkeyServerConfig.getDataDirectory()
-                .appendingPathComponent("hazkey", isDirectory: true)
                 .appendingPathComponent("zenzai", isDirectory: true)
                 .appendingPathComponent("zenzai.gguf", isDirectory: false)
 
@@ -596,7 +595,6 @@ class HazkeyServerConfig {
         let systemZenzaiModelPath = URL(fileURLWithPath: systemResourcePath)
             .appendingPathComponent("zenzai.gguf", isDirectory: false)
         let userZenzaiModelPath = HazkeyServerConfig.getDataDirectory()
-            .appendingPathComponent("hazkey", isDirectory: true)
             .appendingPathComponent("zenzai", isDirectory: true)
             .appendingPathComponent("zenzai.gguf", isDirectory: false)
 
