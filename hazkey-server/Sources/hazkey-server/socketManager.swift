@@ -10,9 +10,13 @@ protocol SocketManagerDelegate: AnyObject {
 class SocketManager {
     weak var delegate: SocketManagerDelegate?
 
+    private var signalSources: [DispatchSourceSignal] = []
+    private var continueServing = true
+
     private var serverFd: Int32 = -1
     private var currentClientFd: Int32?
     private let socketPath: String
+    private var pipeFds: [Int32] = [-1, -1]
 
     init(socketPath: String) {
         self.socketPath = socketPath
@@ -59,21 +63,55 @@ class SocketManager {
         if fcntlRes != 0 {
             NSLog("fcntl() failed")
         }
+
+        var fds: [Int32] = [0, 0]
+        guard pipe(&fds) != -1 else {
+            throw SocketError.readFailed("Failed to bind pipe socket", errno)
+        }
+        pipeFds = fds
+    }
+
+    private func setupSignalHandlers() {
+        // just ignore sigpipe
+        signal(SIGPIPE, SIG_IGN)
+
+        // exit process
+        signal(SIGINT, SIG_IGN)
+        signal(SIGTERM, SIG_IGN)
+        signal(SIGHUP, SIG_IGN)
+        let signals = [SIGINT, SIGTERM, SIGHUP]
+        for sig in signals {
+            let source = DispatchSource.makeSignalSource(signal: sig, queue: .main)
+            source.setEventHandler { [weak self] in
+                NSLog("Signal \(sig) received, shutting down...")
+                self?.continueServing = false
+                // stop poll
+                var val: UInt8 = 1
+                write(self?.pipeFds[1] ?? -1, &val, 1)
+            }
+            source.resume()
+            self.signalSources.append(source)
+        }
     }
 
     func startListening() {
-        while true {
+        setupSignalHandlers()
+        while continueServing {
             var pollFds: [pollfd] = []
 
             // Always poll the server socket for new connections
             pollFds.append(pollfd(fd: serverFd, events: Int16(POLLIN), revents: 0))
+
+            // poll stopper
+            pollFds.append(pollfd(fd: pipeFds[0], events: Int16(POLLIN), revents: 0))
 
             // If we have a current client, also poll it
             if let clientFd = currentClientFd {
                 pollFds.append(pollfd(fd: clientFd, events: Int16(POLLIN), revents: 0))
             }
 
-            let pollRes = poll(&pollFds, nfds_t(pollFds.count), 1000)  // 1 second timeout
+            // add timeout?
+            let pollRes = poll(&pollFds, nfds_t(pollFds.count), -1)
 
             if pollRes < 0 {
                 NSLog("Poll failed: \(errno)")
@@ -85,14 +123,20 @@ class SocketManager {
                 continue
             }
 
+            if pollFds[1].revents & Int16(POLLIN) != 0 {
+                var buf: UInt8 = 0
+                read(pipeFds[0], &buf, 1)
+                if !continueServing { break }
+            }
+
             // Check if server socket has a new connection
             if pollFds[0].revents & Int16(POLLIN) != 0 {
                 handleNewConnection()
             }
 
             // Check if current client has data
-            if let clientFd = currentClientFd, pollFds.count > 1 {
-                let clientEvents = Int32(pollFds[1].revents)
+            if pollFds.count > 2, let clientFd = currentClientFd {
+                let clientEvents = Int32(pollFds[2].revents)
 
                 if clientEvents & POLLHUP != 0 || clientEvents & POLLERR != 0 {
                     NSLog("Client disconnected or error: \(clientFd)")

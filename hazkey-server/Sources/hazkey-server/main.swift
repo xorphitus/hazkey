@@ -3,6 +3,7 @@ import Foundation
 import KanaKanjiConverterModule
 
 do {
+    NSLog("Starting hazkey-server...")
     let server = HazkeyServer()
 
     try server.start()

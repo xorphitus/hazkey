@@ -22,26 +22,6 @@ class ProcessManager {
         }
     }
 
-    func setupSignalHandlers() {
-        signal(SIGTERM) { _ in
-            let runtimeDir = ProcessInfo.processInfo.environment["XDG_RUNTIME_DIR"] ?? "/tmp"
-            let uid = getuid()
-            let pidFilePath = "\(runtimeDir)/hazkey-server.\(uid).pid"
-            try? FileManager.default.removeItem(atPath: pidFilePath)
-            exit(0)
-        }
-        signal(SIGINT) { _ in
-            let runtimeDir = ProcessInfo.processInfo.environment["XDG_RUNTIME_DIR"] ?? "/tmp"
-            let uid = getuid()
-            let pidFilePath = "\(runtimeDir)/hazkey-server.\(uid).pid"
-            try? FileManager.default.removeItem(atPath: pidFilePath)
-            exit(0)
-        }
-        signal(SIGPIPE) { _ in
-            NSLog("SIGPIPE received - client disconnected")
-        }
-    }
-
     func checkExistingServer() throws {
         if FileManager.default.fileExists(atPath: pidFilePath) {
             if let pidString = try? String(contentsOfFile: pidFilePath, encoding: .utf8),

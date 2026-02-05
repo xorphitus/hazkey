@@ -53,13 +53,16 @@ class HazkeyServer: SocketManagerDelegate {
 
     func start() throws {
         processManager.parseCommandLineArguments()
-        processManager.setupSignalHandlers()
         try processManager.checkExistingServer()
         try processManager.createPidFile()
         try socketManager.setupSocket()
 
         NSLog("start listening...")
         socketManager.startListening()
+
+        let _ = state.saveLearningData()
+        try? FileManager.default.removeItem(atPath: socketPath)
+        try? processManager.removePidFile()
     }
 
     func socketManager(_ manager: SocketManager, didReceiveData data: Data, from clientFd: Int32)
