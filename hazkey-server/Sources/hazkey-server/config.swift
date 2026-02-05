@@ -485,7 +485,7 @@ class HazkeyServerConfig {
             specialCandidateProviders: specialCandidateProviders,
             zenzaiMode: zenzaiMode,
             preloadDictionary: false,
-            metadata: ConvertRequestOptions.Metadata.init(versionString: "Hazkey 0.2.0")
+            metadata: ConvertRequestOptions.Metadata.init(versionString: "Hazkey \(hazkeyVersion)")
         )
     }
 

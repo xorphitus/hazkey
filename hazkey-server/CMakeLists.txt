@@ -40,10 +40,10 @@ else()
 endif()
 set(SWIFT_BUILD_TYPE "${_DEFAULT_SWIFT_TYPE}" CACHE STRING "Swift build type (debug/release)")
 
-message(STATUS "Configuring path.swift")
+message(STATUS "Configuring constants.swift")
 configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/Sources/hazkey-server/path.swift.in
-    ${CMAKE_CURRENT_SOURCE_DIR}/Sources/hazkey-server/path.swift
+    ${CMAKE_CURRENT_SOURCE_DIR}/Sources/hazkey-server/constants.swift.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/Sources/hazkey-server/constants.swift
     @ONLY
 )
 

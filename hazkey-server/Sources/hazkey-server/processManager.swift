@@ -1,15 +1,20 @@
 import Foundation
 
 class ProcessManager {
-    private let runtimeDir: String
+    private let runtimeDir: URL
     private let uid: uid_t
     private let pidFilePath: String
+    private let infoFilePath: String
     private var replaceExisting: Bool = false
 
     init() {
-        self.runtimeDir = ProcessInfo.processInfo.environment["XDG_RUNTIME_DIR"] ?? "/tmp"
         self.uid = getuid()
-        self.pidFilePath = "\(runtimeDir)/hazkey-server.\(uid).pid"
+        self.runtimeDir = URL(
+            fileURLWithPath:
+                ProcessInfo.processInfo.environment["XDG_RUNTIME_DIR"]
+                ?? "/tmp/hazkey-runtime-\(uid)", isDirectory: true)
+        self.pidFilePath = "\(runtimeDir.path)/hazkey-server.\(uid).pid"
+        self.infoFilePath = "\(runtimeDir.path)/hazkey-server.\(uid).info"
     }
 
     func parseCommandLineArguments() {
@@ -22,35 +27,62 @@ class ProcessManager {
         }
     }
 
+    // return true when different version found
+    func checkVersionMismatch() -> Bool {
+        if FileManager.default.fileExists(atPath: infoFilePath) {
+            if let versionString = try? String(contentsOfFile: infoFilePath, encoding: .utf8) {
+                return versionString != hazkeyVersion
+            }
+        }
+        return false
+    }
+
     func checkExistingServer() throws {
         if FileManager.default.fileExists(atPath: pidFilePath) {
             if let pidString = try? String(contentsOfFile: pidFilePath, encoding: .utf8),
                 let pid = pid_t(pidString)
             {
                 if kill(pid, 0) == 0 {
-                    if replaceExisting {
-                        if !terminateExistingServer(pid: pid) {
-                            NSLog("Failed to terminate existing server. Exiting.")
-                            exit(1)
-                        }
-                        try? FileManager.default.removeItem(atPath: pidFilePath)
-                    } else {
+                    if !replaceExisting && !checkVersionMismatch() {
                         NSLog("Another hazkey-server is already running.")
                         NSLog("Use -r or --replace option to replace the existing server.")
                         exit(0)
                     }
+                    if !terminateExistingServer(pid: pid) {
+                        NSLog("Failed to terminate existing server. Exiting.")
+                        exit(1)
+                    }
                 }
             }
             try? FileManager.default.removeItem(atPath: pidFilePath)
+            try? FileManager.default.removeItem(atPath: infoFilePath)
         }
     }
 
     func createPidFile() throws {
+        if !FileManager.default.fileExists(atPath: runtimeDir.path) {
+            try FileManager.default.createDirectory(
+                at: runtimeDir, withIntermediateDirectories: true,
+                attributes: [FileAttributeKey.posixPermissions: 0o744])
+        }
         try "\(getpid())".write(toFile: pidFilePath, atomically: true, encoding: .utf8)
     }
 
     func removePidFile() {
         try? FileManager.default.removeItem(atPath: pidFilePath)
+    }
+
+    func createInfoFile() throws {
+        if !FileManager.default.fileExists(atPath: runtimeDir.path) {
+            try FileManager.default.createDirectory(
+                at: runtimeDir, withIntermediateDirectories: true,
+                attributes: [FileAttributeKey.posixPermissions: 0o744])
+        }
+        try hazkeyVersion.write(toFile: infoFilePath, atomically: true, encoding: .utf8)
+    }
+
+    func removeInfoFile() {
+        try? FileManager.default.removeItem(atPath: infoFilePath)
     }
 
     private func terminateExistingServer(pid: pid_t) -> Bool {

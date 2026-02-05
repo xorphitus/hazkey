@@ -1,2 +1,3 @@
 let systemResourcePath: String = "@HAZKEY_SERVER_SYSTEM_RESOURCE_PATH@/hazkey"
 let systemLibraryPath: String = "@HAZKEY_SERVER_SYSTEM_LIBRARY_PATH@/hazkey"
+let hazkeyVersion: String = "@PROJECT_VERSION@"

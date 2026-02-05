@@ -1,7 +1,7 @@
 /.cache
 /.build
 /build
-/Sources/hazkey-server/path.swift
+/Sources/hazkey-server/constants.swift
 
 /CMakeFiles
 /CMakeCache.txt
