@@ -25,7 +25,6 @@ class ServerConnector {
 
    private:
     std::string get_socket_path();
-    void kill_existing_hazkey_server();
     int create_connection();
     std::optional<hazkey::ResponseEnvelope> transact(
         const hazkey::RequestEnvelope& send_data);

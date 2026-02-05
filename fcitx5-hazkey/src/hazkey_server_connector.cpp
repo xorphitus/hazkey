@@ -66,67 +66,6 @@ void HazkeyServerConnector::start_hazkey_server() {
     }
 }
 
-void HazkeyServerConnector::kill_existing_hazkey_server() {
-    DIR* proc_dir = opendir("/proc");
-    if (!proc_dir) {
-        FCITX_ERROR() << "Failed to open /proc directory";
-        return;
-    }
-
-    std::vector<pid_t> hazkey_pids;
-    struct dirent* entry;
-
-    while ((entry = readdir(proc_dir)) != nullptr) {
-        // Skip non-numeric directory names
-        if (!isdigit(entry->d_name[0])) {
-            continue;
-        }
-
-        pid_t pid = atoi(entry->d_name);
-        std::string cmdline_path =
-            "/proc/" + std::string(entry->d_name) + "/cmdline";
-        std::ifstream cmdline_file(cmdline_path);
-        if (!cmdline_file.is_open()) {
-            continue;
-        }
-
-        std::string cmdline;
-        std::getline(cmdline_file, cmdline);
-        cmdline_file.close();
-
-        // Check if the command line contains "hazkey-server"
-        if (cmdline.find("hazkey-server") != std::string::npos) {
-            hazkey_pids.push_back(pid);
-        }
-    }
-
-    closedir(proc_dir);
-
-    // Kill all found hazkey-server processes
-    for (pid_t pid : hazkey_pids) {
-        FCITX_INFO() << "Terminating existing hazkey-server process (PID: "
-                     << pid << ")";
-
-        // First try SIGTERM
-        if (kill(pid, SIGTERM) == 0) {
-            // Wait a bit for graceful shutdown
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
-            // Check if process is still running
-            if (kill(pid, 0) == 0) {
-                // Process still exists, use SIGKILL
-                FCITX_INFO()
-                    << "Force killing hazkey-server process (PID: " << pid
-                    << ")";
-                kill(pid, SIGKILL);
-            }
-        } else {
-            FCITX_DEBUG() << "Failed to send SIGTERM to PID " << pid
-                          << " (may have already exited)";
-        }
-    }
-}
-
 bool writeAll(int fd, const void* data, size_t len) {
     size_t sent = 0;
     while (sent < len) {

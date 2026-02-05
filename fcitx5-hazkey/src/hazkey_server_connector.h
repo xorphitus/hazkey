@@ -71,7 +71,6 @@ class HazkeyServerConnector {
    private:
     bool retry_connect();
     void start_hazkey_server();
-    void kill_existing_hazkey_server();
     bool is_hazkey_server_running();
     bool requestSuccess(hazkey::ResponseEnvelope);
     int sock_ = -1;
