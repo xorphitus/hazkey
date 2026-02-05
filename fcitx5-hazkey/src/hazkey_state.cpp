@@ -89,9 +89,6 @@ void HazkeyState::noPreeditKeyEvent(KeyEvent& event) {
     auto keysym = key.sym();
 
     switch (keysym) {
-        case FcitxKey_Escape:
-            reset();
-            break;
         case FcitxKey_space:
             if (key.states() == KeyState::Shift) {
                 ic_->commitString(" ");
