@@ -161,6 +161,14 @@ struct Hazkey_RequestEnvelope: Sendable {
     set {payload = .getCurrentInputMode(newValue)}
   }
 
+  var saveLearningData: Hazkey_Commands_SaveLearningData {
+    get {
+      if case .saveLearningData(let v)? = payload {return v}
+      return Hazkey_Commands_SaveLearningData()
+    }
+    set {payload = .saveLearningData(newValue)}
+  }
+
   var getConfig: Hazkey_Config_GetConfig {
     get {
       if case .getConfig(let v)? = payload {return v}
@@ -216,6 +224,7 @@ struct Hazkey_RequestEnvelope: Sendable {
     case getHiraganaWithCursor(Hazkey_Commands_GetHiraganaWithCursor)
     case getCandidates(Hazkey_Commands_GetCandidates)
     case getCurrentInputMode(Hazkey_Commands_GetCurrentInputModeInfo)
+    case saveLearningData(Hazkey_Commands_SaveLearningData)
     case getConfig(Hazkey_Config_GetConfig)
     case setConfig(Hazkey_Config_SetConfig)
     case getDefaultProfile(Hazkey_Config_GetDefaultProfile)
@@ -319,6 +328,7 @@ extension Hazkey_RequestEnvelope: SwiftProtobuf.Message, SwiftProtobuf._MessageI
     10: .standard(proto: "get_hiragana_with_cursor"),
     11: .standard(proto: "get_candidates"),
     12: .standard(proto: "get_current_input_mode"),
+    13: .standard(proto: "save_learning_data"),
     100: .standard(proto: "get_config"),
     101: .standard(proto: "set_config"),
     102: .standard(proto: "get_default_profile"),
@@ -488,6 +498,19 @@ extension Hazkey_RequestEnvelope: SwiftProtobuf.Message, SwiftProtobuf._MessageI
           self.payload = .getCurrentInputMode(v)
         }
       }()
+      case 13: try {
+        var v: Hazkey_Commands_SaveLearningData?
+        var hadOneofValue = false
+        if let current = self.payload {
+          hadOneofValue = true
+          if case .saveLearningData(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.payload = .saveLearningData(v)
+        }
+      }()
       case 100: try {
         var v: Hazkey_Config_GetConfig?
         var hadOneofValue = false
@@ -611,6 +634,10 @@ extension Hazkey_RequestEnvelope: SwiftProtobuf.Message, SwiftProtobuf._MessageI
     case .getCurrentInputMode?: try {
       guard case .getCurrentInputMode(let v)? = self.payload else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 12)
+    }()
+    case .saveLearningData?: try {
+      guard case .saveLearningData(let v)? = self.payload else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 13)
     }()
     case .getConfig?: try {
       guard case .getConfig(let v)? = self.payload else { preconditionFailure() }

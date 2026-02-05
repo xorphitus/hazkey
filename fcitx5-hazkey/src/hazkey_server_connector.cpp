@@ -543,6 +543,24 @@ void HazkeyServerConnector::completePrefix(int index) {
     return;
 }
 
+void HazkeyServerConnector::saveLearningData() {
+    hazkey::RequestEnvelope request;
+    request.mutable_save_learning_data();
+    auto response = transact(request);
+    if (response == std::nullopt) {
+        FCITX_ERROR() << "Error while transacting saveLearningData().";
+        return;
+    }
+    auto responseVal = response.value();
+    if (responseVal.status() != hazkey::SUCCESS) {
+        FCITX_ERROR() << "saveLearningData:"
+                      << "Server returned an error: "
+                      << responseVal.error_message();
+        return;
+    }
+    return;
+}
+
 hazkey::commands::CandidatesResult HazkeyServerConnector::getCandidates(
     bool isSuggestMode) {
     hazkey::RequestEnvelope request;

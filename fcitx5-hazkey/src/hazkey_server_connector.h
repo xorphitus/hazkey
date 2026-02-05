@@ -59,6 +59,8 @@ class HazkeyServerConnector {
 
     void completePrefix(int index);
 
+    void saveLearningData();
+
     struct CandidateData {
         std::string candidateText;
         std::string subHiragana;

@@ -21,6 +21,7 @@ message RequestEnvelope {
         hazkey.commands.GetHiraganaWithCursor get_hiragana_with_cursor = 10;
         hazkey.commands.GetCandidates get_candidates = 11;
         hazkey.commands.GetCurrentInputModeInfo get_current_input_mode = 12;
+        hazkey.commands.SaveLearningData save_learning_data = 13;
 
         hazkey.config.GetConfig get_config = 100;
         hazkey.config.SetConfig set_config = 101;

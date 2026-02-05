@@ -37,6 +37,8 @@ class HazkeyEngine : public InputMethodEngineV2 {
     void setConfig(const RawConfig &config) override;
     void reloadConfig() override;
 
+    void save() override;
+
     const HazkeyEngineConfig &config() const { return config_; }
 
    private:

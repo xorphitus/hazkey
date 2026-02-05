@@ -66,6 +66,8 @@ message GetCandidates {
 
 message GetCurrentInputModeInfo {}
 
+message SaveLearningData {}
+
 // Response messages
 
 message Text {

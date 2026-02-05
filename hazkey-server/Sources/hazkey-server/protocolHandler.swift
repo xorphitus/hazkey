@@ -50,6 +50,8 @@ class ProtocolHandler {
             response = state.getCandidates(is_suggest: req.isSuggest)
         case .getCurrentInputMode:
             response = state.getCurrentInputMode()
+        case .saveLearningData:
+            response = state.saveLearningData()
         case .getConfig:
             response = state.serverConfig.getCurrentConfig()
         case .setConfig(let req):

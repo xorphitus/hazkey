@@ -10,7 +10,7 @@ class HazkeyServerState {
 
     var isShiftPressedAlone = false
     var isSubInputMode = false
-    var learningDataUpdated = true
+    var learningDataNeedsCommit = false
 
     var keymap: Keymap
     var currentTableName: String
@@ -61,10 +61,6 @@ class HazkeyServerState {
     /// ComposingText
 
     func createComposingTextInstanse() -> Hazkey_ResponseEnvelope {
-        if !learningDataUpdated {
-            converter.commitUpdateLearningData()
-            learningDataUpdated = true
-        }
         composingText = ComposingTextBox()
         currentCandidateList = nil
         isSubInputMode = false
@@ -146,6 +142,16 @@ class HazkeyServerState {
         }
     }
 
+    func saveLearningData() -> Hazkey_ResponseEnvelope {
+        if learningDataNeedsCommit {
+            converter.commitUpdateLearningData()
+            learningDataNeedsCommit = false
+        }
+        return Hazkey_ResponseEnvelope.with {
+            $0.status = .success
+        }
+    }
+
     func deleteLeft() -> Hazkey_ResponseEnvelope {
         composingText.value.deleteBackwardFromCursorPosition(count: 1)
         return Hazkey_ResponseEnvelope.with {
@@ -164,9 +170,8 @@ class HazkeyServerState {
         if let completedCandidate = currentCandidateList?[candidateIndex] {
             composingText.value.prefixComplete(composingCount: completedCandidate.composingCount)
             converter.setCompletedData(completedCandidate)
-            // saved when the next composingText is initialized
             converter.updateLearningData(completedCandidate)
-            learningDataUpdated = false
+            learningDataNeedsCommit = true
         } else {
             return Hazkey_ResponseEnvelope.with {
                 $0.status = .failed

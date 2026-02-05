@@ -69,6 +69,10 @@ void HazkeyEngine::reloadConfig() {
     //     static_cast<int>(*config().diacriticStyle), *config().zenzaiProfile);
 }
 
+void HazkeyEngine::save() {
+    server_.saveLearningData();
+}
+
 FCITX_ADDON_FACTORY(HazkeyEngineFactory);
 
 }  // namespace fcitx
