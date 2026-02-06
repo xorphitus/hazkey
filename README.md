@@ -2,7 +2,7 @@
 
 Hazkey input method for fcitx5
 
-[AzooKeyKanaKanjiConverter](https://github.com/ensan-hcl/AzooKeyKanaKanjiConverter)を利用したIMEです
+[AzooKeyKanaKanjiConverter](https://github.com/azooKey/AzooKeyKanaKanjiConverter)を利用したIMEです
 
 ## ホームページ
 
@@ -26,21 +26,21 @@ Hazkey input method for fcitx5
 
 - Swift >= 6.1
 - fcitx5 >= 5.0.4
-- Qt >= 6.2
+- Qt >= 6.7 (6.2以降でビルド可能ですが表示が崩れる場合があります)
 - CMake >= 3.21 (4.x以降推奨)
-- Protobuf >= 3.12 (22.x以降推奨)
+- Protobuf >= 3.12
 - Ninja
 - Gettext
 
-### ビルド・インストール手順
+### ソースビルド・インストール手順
 
 ninjaを利用します。
 
 ```sh
-git clone --recursive https://github.com/7ka-Hiira/fcitx5-hazkey.git
+git clone --recursive https://github.com/7ka-Hiira/hazkey.git
 cd fcitx5-hazkey
 mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -G Ninja ..
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DGGML_VULKAN=OFF -G Ninja ..
 ninja
 sudo ninja install
 ```
