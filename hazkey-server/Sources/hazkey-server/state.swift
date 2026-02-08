@@ -28,15 +28,20 @@ class HazkeyServerState {
 
         // Create user state directories (history data)
         do {
-            let newPath = HazkeyServerConfig.getStateDirectory().appendingPathComponent("memory", isDirectory: true)
+            let newPath = HazkeyServerConfig.getStateDirectory().appendingPathComponent(
+                "memory", isDirectory: true)
             if !FileManager.default.fileExists(atPath: newPath.path) {
-                let oldPath = HazkeyServerConfig.getDataDirectory().appendingPathComponent("memory", isDirectory: true)
+                let oldPath = HazkeyServerConfig.getDataDirectory().appendingPathComponent(
+                    "memory", isDirectory: true)
                 if FileManager.default.fileExists(atPath: oldPath.path) {
                     // v0.2.0の保存パスからの移動対応
-                    try FileManager.default.createDirectory(at: HazkeyServerConfig.getStateDirectory(), withIntermediateDirectories: true)
+                    try FileManager.default.createDirectory(
+                        at: HazkeyServerConfig.getStateDirectory(),
+                        withIntermediateDirectories: true)
                     try FileManager.default.moveItem(at: oldPath, to: newPath)
-                    } else {
-                    try FileManager.default.createDirectory(at: newPath, withIntermediateDirectories: true)
+                } else {
+                    try FileManager.default.createDirectory(
+                        at: newPath, withIntermediateDirectories: true)
                 }
             }
         } catch {
@@ -275,8 +280,34 @@ class HazkeyServerState {
 
     // TODO: return error message
     func getCandidates(is_suggest: Bool) -> Hazkey_ResponseEnvelope {
+
+        func canAppend(
+            isSuggest: Bool,
+            currentCount: Int,
+            limit: Int
+        ) -> Bool {
+            return !isSuggest || currentCount < limit
+        }
+
+        func appendCandidate(
+            _ candidate: Candidate,
+            hiraganaPreedit: String,
+            hiraganaPreeditLen: Int,
+            serverCandidates: inout [Candidate],
+            clientCandidates: inout [Hazkey_Commands_CandidatesResult.Candidate]
+        ) {
+            var clientCandidate = Hazkey_Commands_CandidatesResult.Candidate()
+            clientCandidate.text = candidate.text
+
+            let endIndex = min(candidate.rubyCount, hiraganaPreeditLen)
+            clientCandidate.subHiragana = String(hiraganaPreedit.dropFirst(endIndex))
+
+            clientCandidates.append(clientCandidate)
+            serverCandidates.append(candidate)
+        }
+
         var options = baseConvertRequestOptions
-        options.N_best = {
+        let N_best = {
             if is_suggest
                 && serverConfig.currentProfile.suggestionListMode
                     == Hazkey_Config_Profile.SuggestionListMode.suggestionListDisabled
@@ -290,12 +321,14 @@ class HazkeyServerState {
             }
         }()
 
-        options.requireJapanesePrediction =
+        options.N_best = N_best
+
+        let usePrediction: Bool =
             is_suggest
-                && serverConfig.currentProfile.suggestionListMode
-                    == Hazkey_Config_Profile.SuggestionListMode.suggestionListShowPredictiveResults
-            ? .autoMix : .disabled
-        options.requireEnglishPrediction = options.requireJapanesePrediction
+            && serverConfig.currentProfile.suggestionListMode
+                == Hazkey_Config_Profile.SuggestionListMode.suggestionListShowPredictiveResults
+
+        options.requireJapanesePrediction = usePrediction ? .manualMix : .disabled
 
         var copiedComposingText = composingText.value
 
@@ -310,29 +343,55 @@ class HazkeyServerState {
                 ])
         }
 
-        let converted = converter.requestCandidates(copiedComposingText, options: options)
-
-        currentCandidateList = converted.mainResults
-
-        let hiraganaPreedit = copiedComposingText.toHiragana()
-
         var candidatesResult = Hazkey_Commands_CandidatesResult()
+        let converted = converter.requestCandidates(copiedComposingText, options: options)
+        let hiraganaPreedit = copiedComposingText.toHiragana()
+        let hiraganaPreeditLen = hiraganaPreedit.count
+        var serverCandidates: [Candidate] = []
+        var clientCandidates: [Hazkey_Commands_CandidatesResult.Candidate] = []
+
+        // predictionResults is empty when prediction=disabled
+        for candidate in converted.predictionResults {
+            guard
+                canAppend(
+                    isSuggest: is_suggest, currentCount: serverCandidates.count, limit: N_best)
+            else { break }
+
+            appendCandidate(
+                candidate, hiraganaPreedit: hiraganaPreedit, hiraganaPreeditLen: hiraganaPreeditLen,
+                serverCandidates: &serverCandidates,
+                clientCandidates: &clientCandidates)
+        }
+
         candidatesResult.liveTextIndex = -1
-        candidatesResult.candidates = converted.mainResults.enumerated().map { index, c in
-            var candidate = Hazkey_Commands_CandidatesResult.Candidate()
-            candidate.text = c.text
+        for candidate in converted.mainResults {
+            let isExactMatch = candidate.rubyCount == hiraganaPreedit.count
+            let limitReached = !canAppend(
+                isSuggest: is_suggest, currentCount: serverCandidates.count, limit: N_best)
 
-            let endIndex = min(c.rubyCount, hiraganaPreedit.count)
-            candidate.subHiragana = String(hiraganaPreedit.dropFirst(endIndex))
-
-            // Set liveText if conditions are met
-            if candidatesResult.liveText.isEmpty && c.rubyCount == hiraganaPreedit.count {
-                candidatesResult.liveText = c.text
-                candidatesResult.liveTextIndex = Int32(index)
+            // find live text
+            if candidatesResult.liveText.isEmpty && isExactMatch {
+                candidatesResult.liveText = candidate.text
+                candidatesResult.liveTextIndex = Int32(serverCandidates.count)
+                if is_suggest && serverCandidates.count >= N_best {
+                    serverCandidates.append(candidate)
+                    break
+                }
             }
 
-            return candidate
+            if limitReached && !candidatesResult.liveText.isEmpty { break }
+
+            appendCandidate(
+                candidate,
+                hiraganaPreedit: hiraganaPreedit,
+                hiraganaPreeditLen: hiraganaPreeditLen,
+                serverCandidates: &serverCandidates,
+                clientCandidates: &clientCandidates
+            )
         }
+
+        self.currentCandidateList = serverCandidates
+        candidatesResult.candidates = clientCandidates
 
         // Do not automatically convert if there is only one character
         if serverConfig.currentProfile.autoConvertMode

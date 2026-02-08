@@ -209,7 +209,7 @@ class HazkeyServerConfig {
         newConf.auxTextMode = Hazkey_Config_Profile.AuxTextMode.auxTextShowWhenCursorNotAtEnd
         newConf.suggestionListMode =
             Hazkey_Config_Profile.SuggestionListMode.suggestionListShowPredictiveResults
-        newConf.numSuggestions = 4
+        newConf.numSuggestions = 3
         newConf.useRichSuggestion = false
         newConf.numCandidatesPerPage = 9
         newConf.useRichCandidates = false
