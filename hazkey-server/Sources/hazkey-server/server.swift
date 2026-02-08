@@ -1,60 +1,75 @@
-import Dispatch
 import Foundation
-import KanaKanjiConverterModule
 
 class HazkeyServer: SocketManagerDelegate {
     private let processManager: ProcessManager
-    private let socketManager: SocketManager
-    private let protocolHandler: ProtocolHandler
-    private let state: HazkeyServerState
+    private var socketManager: SocketManager
+    private var protocolHandler: ProtocolHandler?
+    private var state: HazkeyServerState?
 
-    private let runtimeDir: String
-    private let uid: uid_t
+    private let runtimeDir: URL
     private let socketPath: String
+    private let lockFilePath: String
 
     init() {
-        // Initialize runtime paths
-        self.runtimeDir = ProcessInfo.processInfo.environment["XDG_RUNTIME_DIR"] ?? "/tmp"
-        self.uid = getuid()
-        self.socketPath = "\(runtimeDir)/hazkey-server.\(uid).sock"
+        let uid = getuid()
+        self.runtimeDir = URL(
+            fileURLWithPath:
+                ProcessInfo.processInfo.environment["XDG_RUNTIME_DIR"]
+                ?? "/tmp/hazkey-runtime-\(uid)", isDirectory: true)
 
-        // Initialize managers
-        self.processManager = ProcessManager()
+        self.socketPath = "\(runtimeDir.path)/hazkey-server.\(uid).sock"
+        self.lockFilePath = "\(runtimeDir.path)/hazkey-server.\(uid).lock"
+
+        self.processManager = ProcessManager(lockFilePath: lockFilePath)
         self.socketManager = SocketManager(socketPath: socketPath)
-
-        // Initialize server state
-        self.state = HazkeyServerState()
-
-        self.protocolHandler = ProtocolHandler(state: state)
-
-        // Set delegate
         socketManager.delegate = self
     }
 
+    func parseCommandLineArguments() -> Bool {
+        let arguments = CommandLine.arguments
+        for arg in arguments {
+            if arg == "-r" || arg == "--replace" {
+                return true
+            }
+        }
+        return false
+    }
+
     func start() throws {
-        processManager.parseCommandLineArguments()
-        try processManager.checkExistingServer()
+        let forceRestart = parseCommandLineArguments()
+        if !FileManager.default.fileExists(atPath: runtimeDir.path) {
+            try FileManager.default.createDirectory(
+                at: runtimeDir, withIntermediateDirectories: true,
+                attributes: [FileAttributeKey.posixPermissions: 0o700])
+        }
+        do {
+            try processManager.tryLock(force: forceRestart)
+        } catch ProcessManagerError.anotherInstanceRunning {
+            // NSLogged by tryLock()
+            // expected exit
+            return
+        } catch {
+            NSLog("Failed to start hazkey-server: \(error)")
+            exit(1)
+        }
+        self.state = HazkeyServerState()
+        self.protocolHandler = ProtocolHandler(state: self.state!)
         try socketManager.setupSocket()
-        // ソケット失敗した時にpid fileが残るのを防止
-        // 必ずsocket->pidの順番で実行する
-        try processManager.createPidFile()
-        try? processManager.createInfoFile()  // less important
+        // start main loop
         NSLog("start listening...")
-        // DispatchQueue.global(qos: .userInitiated).async {
-            socketManager.startListening()
-        // }
-
-        let _ = state.saveLearningData()
-
-        // Leave them to stabilize
-        // processManager.removeInfoFile()
-        // processManager.removePidFile()
+        socketManager.startListening()
+        // finish process
+        let _ = state?.saveLearningData()
     }
 
     func socketManager(_ manager: SocketManager, didReceiveData data: Data, from clientFd: Int32)
         -> Data
     {
-        return protocolHandler.processProto(data: data)
+        guard let handler = protocolHandler else {
+            NSLog("protocolHandler is nil! exiting...")
+            exit(1)
+        }
+        return handler.processProto(data: data)
     }
 
     func socketManager(_ manager: SocketManager, clientDidConnect clientFd: Int32) {}

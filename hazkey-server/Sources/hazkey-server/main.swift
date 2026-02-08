@@ -1,6 +1,4 @@
-import Dispatch
 import Foundation
-import KanaKanjiConverterModule
 
 do {
     NSLog("Starting hazkey-server...")

@@ -63,8 +63,7 @@ void HazkeyEngine::reloadConfig() {
 
     if (lastVersion != HAZKEY_VERSION) {
         FCITX_DEBUG() << "Update detected. restarting server..";
-        // server automatically restarts if current server is newer than running server.
-        server_.startHazkeyServer(false);
+        server_.startHazkeyServer(true);
 
         config_.lastVersion.setValue(HAZKEY_VERSION);
         safeSaveAsIni(config_, "conf/hazkey.conf");
