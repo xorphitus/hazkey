@@ -119,7 +119,16 @@ install(TARGETS hazkey-settings
 )
 
 # install desktop entry
-install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/hazkey-settings.desktop"
+if(HAZKEY_FLATPAK)
+    set(HAZKEY_ICON_NAME "org.hazkey.Fcitx5.Addon.Hazkey")
+    set(HAZKEY_SETTINGS_DESKTOP_FILE_NAME org.hazkey.Fcitx5.Addon.Hazkey.hazkey-settings)
+else()
+    set(HAZKEY_ICON_NAME "hazkey")
+    set(HAZKEY_SETTINGS_DESKTOP_FILE_NAME hazkey-settings)
+endif()
+
+configure_file(hazkey-settings.desktop.in ${HAZKEY_SETTINGS_DESKTOP_FILE_NAME}.desktop @ONLY)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${HAZKEY_SETTINGS_DESKTOP_FILE_NAME}.desktop"
     DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/applications)
 
 # create a symlink in the binary directory

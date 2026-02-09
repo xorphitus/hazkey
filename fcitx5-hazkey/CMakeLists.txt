@@ -26,6 +26,12 @@ fcitx5_add_i18n_definition()
 
 find_package(Gettext REQUIRED)
 
+if(HAZKEY_FLATPAK)
+    set(HAZKEY_ICON_NAME "org.hazkey.Fcitx5.Addon.Hazkey")
+else()
+    set(HAZKEY_ICON_NAME "hazkey")
+endif()
+
 add_subdirectory(po)
 add_subdirectory(src)
 

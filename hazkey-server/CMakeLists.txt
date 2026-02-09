@@ -147,19 +147,24 @@ if(HAZKEY_SERVER_INSTALL_LLAMA_LIBS)
 endif()
 
 # install icons
+if(HAZKEY_FLATPAK)
+    set(HAZKEY_ICON_NAME "org.hazkey.Fcitx5.Addon.Hazkey")
+else()
+    set(HAZKEY_ICON_NAME "hazkey")
+endif()
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/icons/hazkey.svg
         DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/icons/hicolor/scalable/apps)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/icons/hazkey_256x256.png
-        RENAME hazkey.png
+        RENAME ${HAZKEY_ICON_NAME}.png
         DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/icons/hicolor/256x256/apps)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/icons/hazkey_48x48.png
-        RENAME hazkey.png
+        RENAME ${HAZKEY_ICON_NAME}.png
         DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/icons/hicolor/48x48/apps)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/icons/hazkey_32x32.png
-        RENAME hazkey.png
+        RENAME ${HAZKEY_ICON_NAME}.png
         DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/icons/hicolor/32x32/apps)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/icons/hazkey_24x24.png
-        RENAME hazkey.png
+        RENAME ${HAZKEY_ICON_NAME}.png
         DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/icons/hicolor/24x24/apps)
 
 # install dictionary
