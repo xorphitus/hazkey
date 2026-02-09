@@ -159,11 +159,7 @@ jobs:
         run: |
           mkdir -p ${{ github.workspace }}/hazkey-server/build
           cd ${{ github.workspace }}/hazkey-server/build
-          if [ "${{ matrix.arch }}" = "aarch64" ]; then
-            cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DGGML_CPU_ALL_VARIANTS=OFF -DGGML_CPU_ARM_ARCH=armv8-a -G Ninja ..
-          else
-            cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -G Ninja ..
-          fi
+          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -G Ninja ..
           ninja -j$(nproc)
           env DESTDIR=${{ github.workspace }}/workdir ninja install
 
