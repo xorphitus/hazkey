@@ -2,6 +2,205 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="ja_JP">
 <context>
+    <name>AiTabController</name>
+    <message>
+        <location filename="controllers/ai_tab_controller.cpp" line="109"/>
+        <location filename="controllers/ai_tab_controller.cpp" line="199"/>
+        <location filename="controllers/ai_tab_controller.cpp" line="211"/>
+        <location filename="controllers/ai_tab_controller.cpp" line="218"/>
+        <location filename="controllers/ai_tab_controller.cpp" line="229"/>
+        <location filename="controllers/ai_tab_controller.cpp" line="237"/>
+        <location filename="controllers/ai_tab_controller.cpp" line="269"/>
+        <source>Download Error</source>
+        <translation>ダウンロードエラー</translation>
+    </message>
+    <message>
+        <location filename="controllers/ai_tab_controller.cpp" line="110"/>
+        <source>Failed to create directory: %1</source>
+        <translation>ディレクトリの作成に失敗しました: %1</translation>
+    </message>
+    <message>
+        <location filename="controllers/ai_tab_controller.cpp" line="116"/>
+        <source>File Exists</source>
+        <translation>ファイルが存在します</translation>
+    </message>
+    <message>
+        <location filename="controllers/ai_tab_controller.cpp" line="117"/>
+        <source>Overwrite the existing Zenzai model?</source>
+        <translation>既存のZenzaiモデルファイルを上書きしますか?</translation>
+    </message>
+    <message>
+        <location filename="controllers/ai_tab_controller.cpp" line="126"/>
+        <source>Downloading Zenzai model...</source>
+        <translation>Zenzaiモデルをダウンロード中...</translation>
+    </message>
+    <message>
+        <location filename="controllers/ai_tab_controller.cpp" line="126"/>
+        <source>Cancel</source>
+        <translation>キャンセル</translation>
+    </message>
+    <message>
+        <location filename="controllers/ai_tab_controller.cpp" line="164"/>
+        <source>Downloading Zenzai model... %1 MB / %2 MB</source>
+        <translation>Zenzaiモデルをダウンロード中... %1 MB / %2 MB</translation>
+    </message>
+    <message>
+        <location filename="controllers/ai_tab_controller.cpp" line="200"/>
+        <source>Downloaded file verification failed. Checksum mismatch.
+Expected: %1
+Got: %2</source>
+        <translation>ダウンロードされたファイルの検証に失敗しました。チェックサムが一致しません。
+期待値: %1
+取得地: %2</translation>
+    </message>
+    <message>
+        <location filename="controllers/ai_tab_controller.cpp" line="212"/>
+        <source>Failed to save model file: %1</source>
+        <translation>モデルファイルの保存に失敗しました: %1</translation>
+    </message>
+    <message>
+        <location filename="controllers/ai_tab_controller.cpp" line="219"/>
+        <source>Failed to write model file: %1</source>
+        <translation>モデルファイルの書き込みに失敗しました: %1</translation>
+    </message>
+    <message>
+        <location filename="controllers/ai_tab_controller.cpp" line="230"/>
+        <source>Failed to remove old model file.</source>
+        <translation>古いモデルファイルの削除に失敗しました。</translation>
+    </message>
+    <message>
+        <location filename="controllers/ai_tab_controller.cpp" line="238"/>
+        <source>Failed to rename model file.</source>
+        <translation>モデルファイルの名前変更に失敗しました。</translation>
+    </message>
+    <message>
+        <location filename="controllers/ai_tab_controller.cpp" line="248"/>
+        <source>Download Complete</source>
+        <translation>ダウンロード完了</translation>
+    </message>
+    <message>
+        <location filename="controllers/ai_tab_controller.cpp" line="249"/>
+        <source>Zenzai model has been downloaded successfully.
+Please push &apos;Reload&apos; to refresh the UI.</source>
+        <translation>Zenzaiモデルが正常にダウンロードされました。
+UIを更新するには再読み込みボタンを押してください。</translation>
+    </message>
+    <message>
+        <location filename="controllers/ai_tab_controller.cpp" line="270"/>
+        <source>Failed to download Zenzai model: %1</source>
+        <translation>Zenzaiモデルのダウンロードに失敗しました: %1</translation>
+    </message>
+    <message>
+        <location filename="controllers/ai_tab_controller.cpp" line="311"/>
+        <source>&lt;b&gt;Warning:&lt;/b&gt; Zenzai support not installed.</source>
+        <translation>&lt;b&gt;警告:&lt;/b&gt; Zenzaiサポートがインストールされていません。</translation>
+    </message>
+    <message>
+        <location filename="controllers/ai_tab_controller.cpp" line="321"/>
+        <source>&lt;b&gt;Warning:&lt;/b&gt; Zenzai model not found.</source>
+        <translation>&lt;b&gt;警告:&lt;/b&gt; Zenzaiモデルが見つかりません。</translation>
+    </message>
+    <message>
+        <location filename="controllers/ai_tab_controller.cpp" line="322"/>
+        <source>Download Model</source>
+        <translation>モデルをダウンロード</translation>
+    </message>
+    <message>
+        <location filename="controllers/ai_tab_controller.cpp" line="340"/>
+        <source>The current model is not the latest version.</source>
+        <translation>現在のZenzaiモデルは最新バージョンではありません。</translation>
+    </message>
+    <message>
+        <location filename="controllers/ai_tab_controller.cpp" line="341"/>
+        <source>Download Update</source>
+        <translation>更新をダウンロード</translation>
+    </message>
+</context>
+<context>
+    <name>InputStyleTabController</name>
+    <message>
+        <location filename="controllers/input_style_tab_controller.cpp" line="131"/>
+        <location filename="controllers/input_style_tab_controller.cpp" line="159"/>
+        <location filename="controllers/input_style_tab_controller.cpp" line="235"/>
+        <location filename="controllers/input_style_tab_controller.cpp" line="263"/>
+        <location filename="controllers/input_style_tab_controller.cpp" line="334"/>
+        <location filename="controllers/input_style_tab_controller.cpp" line="408"/>
+        <source>[built-in]</source>
+        <translation>[内蔵]</translation>
+    </message>
+    <message>
+        <location filename="controllers/input_style_tab_controller.cpp" line="134"/>
+        <location filename="controllers/input_style_tab_controller.cpp" line="238"/>
+        <source>[not found]</source>
+        <translation>[見つかりません]</translation>
+    </message>
+    <message>
+        <location filename="controllers/input_style_tab_controller.cpp" line="475"/>
+        <location filename="controllers/input_style_tab_controller.cpp" line="476"/>
+        <location filename="controllers/input_style_tab_controller.cpp" line="477"/>
+        <location filename="controllers/input_style_tab_controller.cpp" line="572"/>
+        <location filename="controllers/input_style_tab_controller.cpp" line="573"/>
+        <location filename="controllers/input_style_tab_controller.cpp" line="574"/>
+        <source>Disabled in Kana mode</source>
+        <translation>かなモードでは無効</translation>
+    </message>
+    <message>
+        <location filename="controllers/input_style_tab_controller.cpp" line="719"/>
+        <source>&lt;b&gt;Warning:&lt;/b&gt; Current settings can only be edited in Advanced mode.</source>
+        <translation>&lt;b&gt;警告:&lt;/b&gt; 現在の設定は詳細設定モードでのみ編集できます。</translation>
+    </message>
+    <message>
+        <location filename="controllers/input_style_tab_controller.cpp" line="722"/>
+        <source>Reset Input Style</source>
+        <translation>入力スタイルをリセット</translation>
+    </message>
+    <message>
+        <location filename="controllers/input_style_tab_controller.cpp" line="872"/>
+        <source>JIS Kana</source>
+        <translation>JISかな</translation>
+    </message>
+    <message>
+        <location filename="controllers/input_style_tab_controller.cpp" line="874"/>
+        <source>Japanese Symbol</source>
+        <translation>日本語用記号</translation>
+    </message>
+    <message>
+        <location filename="controllers/input_style_tab_controller.cpp" line="876"/>
+        <source>Fullwidth Period</source>
+        <translation>全角ピリオド</translation>
+    </message>
+    <message>
+        <location filename="controllers/input_style_tab_controller.cpp" line="878"/>
+        <source>Fullwidth Comma</source>
+        <translation>全角カンマ</translation>
+    </message>
+    <message>
+        <location filename="controllers/input_style_tab_controller.cpp" line="880"/>
+        <source>Fullwidth Number</source>
+        <translation>全角数字</translation>
+    </message>
+    <message>
+        <location filename="controllers/input_style_tab_controller.cpp" line="882"/>
+        <source>Fullwidth Symbol</source>
+        <translation>全角記号</translation>
+    </message>
+    <message>
+        <location filename="controllers/input_style_tab_controller.cpp" line="884"/>
+        <source>Fullwidth Space</source>
+        <translation>全角スペース</translation>
+    </message>
+    <message>
+        <location filename="controllers/input_style_tab_controller.cpp" line="893"/>
+        <source>Romaji</source>
+        <translation>ローマ字</translation>
+    </message>
+    <message>
+        <location filename="controllers/input_style_tab_controller.cpp" line="895"/>
+        <source>Kana</source>
+        <translation>かな</translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <location filename="mainwindow.ui" line="26"/>
@@ -259,13 +458,11 @@
     </message>
     <message>
         <location filename="mainwindow.ui" line="861"/>
-        <location filename="mainwindow.cpp" line="1517"/>
         <source>Romaji</source>
         <translation>ローマ字</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="866"/>
-        <location filename="mainwindow.cpp" line="1494"/>
         <source>JIS Kana</source>
         <translation>JISかな</translation>
     </message>
@@ -469,310 +666,138 @@
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/7ka-Hiira/fcitx5-hazkey/issues&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#2980b9;&quot;&gt;不具合報告&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="77"/>
-        <location filename="mainwindow.cpp" line="1751"/>
-        <location filename="mainwindow.cpp" line="1759"/>
-        <location filename="mainwindow.cpp" line="1766"/>
-        <location filename="mainwindow.cpp" line="1773"/>
+        <location filename="mainwindow.cpp" line="48"/>
+        <location filename="mainwindow.cpp" line="206"/>
+        <location filename="mainwindow.cpp" line="213"/>
+        <location filename="mainwindow.cpp" line="220"/>
+        <location filename="mainwindow.cpp" line="226"/>
         <source>Configuration Error</source>
         <translation>設定エラー</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="78"/>
+        <location filename="mainwindow.cpp" line="49"/>
         <source>Failed to load configuration. Please check your connection to the hazkey server.</source>
         <translation>設定の読み込みに失敗しました。hazkeyサーバーへの接続を確認してください。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="233"/>
-        <source>&lt;b&gt;Warning:&lt;/b&gt; Zenzai support not installed.</source>
-        <translation>&lt;b&gt;警告:&lt;/b&gt; Zenzaiサポートがインストールされていません。</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="389"/>
-        <location filename="mainwindow.cpp" line="1459"/>
-        <location filename="mainwindow.cpp" line="1481"/>
+        <location filename="mainwindow.cpp" line="154"/>
         <source>Error</source>
         <translation>エラー</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="390"/>
-        <location filename="mainwindow.cpp" line="1460"/>
+        <location filename="mainwindow.cpp" line="155"/>
         <source>No configuration profile loaded.</source>
         <translation>設定プロファイルが読み込まれていません。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="456"/>
-        <location filename="mainwindow.cpp" line="461"/>
+        <location filename="mainwindow.cpp" line="170"/>
+        <location filename="mainwindow.cpp" line="175"/>
         <source>Save Error</source>
         <translation>保存エラー</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="457"/>
+        <location filename="mainwindow.cpp" line="171"/>
         <source>Failed to save configuration: %1</source>
         <translation>設定の保存に失敗しました: %1</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="462"/>
+        <location filename="mainwindow.cpp" line="176"/>
         <source>An unknown error occurred while saving configuration.</source>
         <translation>設定の保存中に不明なエラーが発生しました。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1519"/>
-        <source>Kana</source>
-        <translation>かな</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="518"/>
-        <location filename="mainwindow.cpp" line="757"/>
-        <source>[not found]</source>
-        <translation>[見つかりません]</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="50"/>
+        <location filename="mainwindow.cpp" line="35"/>
         <source>Reload</source>
         <translation>再読み込み</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="243"/>
-        <source>&lt;b&gt;Warning:&lt;/b&gt; Zenzai model not found.</source>
-        <translation>&lt;b&gt;警告:&lt;/b&gt; Zenzaiモデルが見つかりません。</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="244"/>
-        <source>Download Model</source>
-        <translation>モデルをダウンロード</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="265"/>
-        <source>The current model is not the latest version.</source>
-        <translation>現在のZenzaiモデルは最新バージョンではありません。</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="266"/>
-        <source>Download Update</source>
-        <translation>更新をダウンロード</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="515"/>
-        <location filename="mainwindow.cpp" line="544"/>
-        <location filename="mainwindow.cpp" line="627"/>
-        <location filename="mainwindow.cpp" line="754"/>
-        <location filename="mainwindow.cpp" line="783"/>
-        <location filename="mainwindow.cpp" line="867"/>
-        <source>[built-in]</source>
-        <translation>[内蔵]</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="974"/>
-        <location filename="mainwindow.cpp" line="975"/>
-        <location filename="mainwindow.cpp" line="976"/>
-        <location filename="mainwindow.cpp" line="1089"/>
-        <location filename="mainwindow.cpp" line="1090"/>
-        <location filename="mainwindow.cpp" line="1091"/>
-        <source>Disabled in Kana mode</source>
-        <translation>かなモードでは無効</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1255"/>
-        <source>&lt;b&gt;Warning:&lt;/b&gt; Current settings can only be edited in Advanced mode.</source>
-        <translation>&lt;b&gt;警告:&lt;/b&gt; 現在の設定は詳細設定モードでのみ編集できます。</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1258"/>
-        <source>Reset Input Style</source>
-        <translation>入力スタイルをリセット</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1466"/>
-        <source>Clear Input History</source>
-        <translation>入力履歴を削除</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1467"/>
-        <source>Are you sure you want to clear all input history data? This action cannot be undone.</source>
-        <translation>この操作は取り消せません。本当に履歴を削除しますか？</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1477"/>
-        <source>Success</source>
-        <translation>成功</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1478"/>
-        <source>Input history has been cleared successfully.</source>
-        <translation>入力履歴が削除されました</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1482"/>
-        <source>Failed to clear input history. Please check your connection to the hazkey server.</source>
-        <translation>入力履歴の削除に失敗しました。hazkey-serverとの接続を確認してください。</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1496"/>
-        <source>Japanese Symbol</source>
-        <translation>日本語用記号</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1498"/>
-        <source>Fullwidth Period</source>
-        <translation>全角ピリオド</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1500"/>
-        <source>Fullwidth Comma</source>
-        <translation>全角カンマ</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1502"/>
-        <source>Fullwidth Number</source>
-        <translation>全角数字</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1504"/>
-        <source>Fullwidth Symbol</source>
-        <translation>全角記号</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1506"/>
-        <source>Fullwidth Space</source>
-        <translation>全角スペース</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1548"/>
-        <location filename="mainwindow.cpp" line="1644"/>
-        <location filename="mainwindow.cpp" line="1658"/>
-        <location filename="mainwindow.cpp" line="1665"/>
-        <location filename="mainwindow.cpp" line="1677"/>
-        <location filename="mainwindow.cpp" line="1685"/>
-        <location filename="mainwindow.cpp" line="1718"/>
-        <source>Download Error</source>
-        <translation>ダウンロードエラー</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1549"/>
-        <source>Failed to create directory: %1</source>
-        <translation>ディレクトリの作成に失敗しました: %1</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1555"/>
-        <source>File Exists</source>
-        <translation>ファイルが存在します</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1555"/>
-        <source>Overwrite the existing Zenzai model?</source>
-        <translation>既存のZenzaiモデルファイルを上書きしますか?</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1565"/>
-        <source>Downloading Zenzai model...</source>
-        <translation>Zenzaiモデルをダウンロード中...</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1565"/>
-        <source>Cancel</source>
-        <translation>キャンセル</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1604"/>
-        <source>Downloading Zenzai model... %1 MB / %2 MB</source>
-        <translation>Zenzaiモデルをダウンロード中... %1 MB / %2 MB</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1645"/>
-        <source>Downloaded file verification failed. Checksum mismatch.
-Expected: %1
-Got: %2</source>
-        <translation>ダウンロードされたファイルの検証に失敗しました。チェックサムが一致しません。
-期待値: %1
-取得地: %2</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1659"/>
-        <source>Failed to save model file: %1</source>
-        <translation>モデルファイルの保存に失敗しました: %1</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1666"/>
-        <source>Failed to write model file: %1</source>
-        <translation>モデルファイルの書き込みに失敗しました: %1</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1678"/>
-        <source>Failed to remove old model file.</source>
-        <translation>古いモデルファイルの削除に失敗しました。</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1686"/>
-        <source>Failed to rename model file.</source>
-        <translation>モデルファイルの名前変更に失敗しました。</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1695"/>
-        <source>Download Complete</source>
-        <translation>ダウンロード完了</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1696"/>
-        <source>Zenzai model has been downloaded successfully.
-Please push &apos;Reload&apos; to refresh the UI.</source>
-        <translation>Zenzaiモデルが正常にダウンロードされました。
-UIを更新するには再読み込みボタンを押してください。</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1725"/>
+        <location filename="mainwindow.cpp" line="183"/>
         <source>Reload Configuration</source>
         <translation>設定を再読み込み</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1726"/>
+        <location filename="mainwindow.cpp" line="184"/>
         <source>Reloading will discard any unsaved changes. Continue?</source>
         <translation>再読み込みすると、保存されていない変更は失われます。続行しますか？</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1735"/>
+        <location filename="mainwindow.cpp" line="192"/>
         <source>Connection Error</source>
         <translation>接続エラー</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1736"/>
+        <location filename="mainwindow.cpp" line="193"/>
         <source>Failed to connect to server.</source>
         <translation>サーバーへの接続に失敗しました。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1752"/>
+        <location filename="mainwindow.cpp" line="207"/>
         <source>Failed to load configuration from server.</source>
         <translation>サーバーから設定を読み込めませんでした。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1760"/>
+        <location filename="mainwindow.cpp" line="214"/>
         <source>No profile found in configuration.</source>
         <translation>設定にプロファイルが見つかりません。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1767"/>
+        <location filename="mainwindow.cpp" line="221"/>
         <source>Failed to access profile.</source>
         <translation>プロファイルへのアクセスに失敗しました。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1774"/>
+        <location filename="mainwindow.cpp" line="227"/>
         <source>Failed to update UI.</source>
         <translation>UIの更新に失敗しました。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1780"/>
+        <location filename="mainwindow.cpp" line="233"/>
         <source>Reload Complete</source>
         <translation>再読み込み完了</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1781"/>
+        <location filename="mainwindow.cpp" line="234"/>
         <source>Configuration has been reloaded successfully.</source>
         <translation>設定が正常に再読み込みされました。</translation>
     </message>
+</context>
+<context>
+    <name>QObject</name>
     <message>
-        <location filename="mainwindow.cpp" line="1719"/>
-        <source>Failed to download Zenzai model: %1</source>
-        <translation>Zenzaiモデルのダウンロードに失敗しました: %1</translation>
+        <location filename="controllers/conversion_tab_controller.cpp" line="132"/>
+        <location filename="controllers/conversion_tab_controller.cpp" line="152"/>
+        <source>Error</source>
+        <translation>エラー</translation>
+    </message>
+    <message>
+        <location filename="controllers/conversion_tab_controller.cpp" line="133"/>
+        <source>No configuration profile loaded.</source>
+        <translation>設定プロファイルが読み込まれていません。</translation>
+    </message>
+    <message>
+        <location filename="controllers/conversion_tab_controller.cpp" line="138"/>
+        <source>Clear Input History</source>
+        <translation>入力履歴を削除</translation>
+    </message>
+    <message>
+        <location filename="controllers/conversion_tab_controller.cpp" line="139"/>
+        <source>Are you sure you want to clear all input history data? This action cannot be undone.</source>
+        <translation>この操作は取り消せません。本当に履歴を削除しますか？</translation>
+    </message>
+    <message>
+        <location filename="controllers/conversion_tab_controller.cpp" line="149"/>
+        <source>Success</source>
+        <translation>成功</translation>
+    </message>
+    <message>
+        <location filename="controllers/conversion_tab_controller.cpp" line="150"/>
+        <source>Input history has been cleared successfully.</source>
+        <translation>入力履歴が削除されました</translation>
+    </message>
+    <message>
+        <location filename="controllers/conversion_tab_controller.cpp" line="153"/>
+        <source>Failed to clear input history. Please check your connection to the hazkey server.</source>
+        <translation>入力履歴の削除に失敗しました。hazkey-serverとの接続を確認してください。</translation>
     </message>
 </context>
 </TS>

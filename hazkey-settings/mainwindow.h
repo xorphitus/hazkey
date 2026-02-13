@@ -3,10 +3,16 @@
 
 #include <QAbstractButton>
 #include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QProgressDialog>
 #include <QWidget>
+#include <memory>
 
+#include "controllers/about_tab_controller.h"
+#include "controllers/ai_tab_controller.h"
+#include "controllers/conversion_tab_controller.h"
+#include "controllers/dictionary_tab_controller.h"
+#include "controllers/input_style_tab_controller.h"
+#include "controllers/tab_context.h"
+#include "controllers/user_interface_tab_controller.h"
 #include "serverconnector.h"
 
 QT_BEGIN_NAMESPACE
@@ -25,73 +31,25 @@ class MainWindow : public QWidget {
    private slots:
     void onButtonClicked(QAbstractButton* button);
     void onApply();
-    void onUseHistoryToggled(bool enabled);
-    void onEnableTable();
-    void onDisableTable();
-    void onTableMoveUp();
-    void onTableMoveDown();
-    void onEnabledTableSelectionChanged();
-    void onAvailableTableSelectionChanged();
-    void onEnableKeymap();
-    void onDisableKeymap();
-    void onKeymapMoveUp();
-    void onKeymapMoveDown();
-    void onEnabledKeymapSelectionChanged();
-    void onAvailableKeymapSelectionChanged();
-    void onSubmodeEntryChanged();
-    void onBasicInputStyleChanged();
-    void onBasicSettingChanged();
-    void resetInputStyleToDefault();
-    void onCheckAllConversion();
-    void onUncheckAllConversion();
-    void onClearLearningData();
-    void onDownloadZenzaiModel();
-    void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
-    void onDownloadFinished();
-    void onDownloadError(QNetworkReply::NetworkError error);
     void onResetConfiguration();
 
    private:
     void connectSignals();
     bool loadCurrentConfig(bool fetchConfig = true);
     bool saveCurrentConfig();
-    void setupInputTableLists();
-    void loadInputTables();
-    void saveInputTables();
-    void updateTableButtonStates();
-    void setupKeymapLists();
-    void loadKeymaps();
-    void saveKeymaps();
-    void updateKeymapButtonStates();
-    void syncBasicToAdvanced();
-    void syncAdvancedToBasic();
-    bool isBasicModeCompatible();
-    void showBasicModeWarning();
-    void hideBasicModeWarning();
-    void setBasicTabEnabled(bool enabled);
-    void applyBasicInputStyle();
-    void applyBasicPunctuationStyle();
-    void applyBasicNumberStyle();
-    void applyBasicSymbolStyle();
-    void applyBasicSpaceStyle();
-    void addKeymapIfAvailable(const QString& keymapName, bool isBuiltIn);
-    void addInputTableIfAvailable(const QString& tableName, bool isBuiltIn);
-    void clearKeymapsAndTables();
-    QString translateKeymapName(const QString& keymapName, bool isBuiltin);
-    QString translateTableName(const QString& tableName, bool isBuiltin);
-    QString calculateFileSHA256(const QString& filePath);
-    QWidget* createWarningWidget(
-        const QString& message, const QString& backgroundColor,
-        const QString& buttonText = QString(),
-        std::function<void()> buttonCallback = nullptr);
+    void bindContexts();
+    void setupControllers();
     Ui::MainWindow* ui_;
     ServerConnector server_;
     hazkey::config::CurrentConfig currentConfig_;
     hazkey::config::Profile* currentProfile_;
-    bool isUpdatingFromAdvanced_;
-    QNetworkAccessManager* networkManager_;
-    QNetworkReply* currentDownload_;
-    QProgressDialog* downloadProgressDialog_;
-    QString zenzaiModelPath_;
+    std::unique_ptr<QNetworkAccessManager> networkManager_;
+    hazkey::settings::TabContext controllerContext_;
+    std::unique_ptr<hazkey::settings::UserInterfaceTabController> uiTab_;
+    std::unique_ptr<hazkey::settings::ConversionTabController> conversionTab_;
+    std::unique_ptr<hazkey::settings::InputStyleTabController> inputStyleTab_;
+    std::unique_ptr<hazkey::settings::DictionaryTabController> dictionaryTab_;
+    std::unique_ptr<hazkey::settings::AiTabController> aiTab_;
+    std::unique_ptr<hazkey::settings::AboutTabController> aboutTab_;
 };
 #endif  // MAINWINDOW_H

@@ -12,6 +12,7 @@ project(hazkey-settings VERSION 0.2.1 LANGUAGES CXX)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -35,6 +36,23 @@ set(PROJECT_SOURCES
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
+    controllers/tab_context.h
+    controllers/warning_widget_factory.cpp
+    controllers/warning_widget_factory.h
+    controllers/user_interface_tab_controller.cpp
+    controllers/user_interface_tab_controller.h
+    controllers/conversion_tab_controller.cpp
+    controllers/conversion_tab_controller.h
+    controllers/input_style_tab_controller.cpp
+    controllers/input_style_tab_controller.h
+    controllers/dictionary_tab_controller.cpp
+    controllers/dictionary_tab_controller.h
+    controllers/ai_tab_controller.cpp
+    controllers/ai_tab_controller.h
+    controllers/about_tab_controller.cpp
+    controllers/about_tab_controller.h
+    controllers/dual_list_controller.cpp
+    controllers/dual_list_controller.h
     serverconnector.cpp
     serverconnector.h
     config_definitions.h
@@ -104,6 +122,7 @@ endif()
 
 target_include_directories(hazkey-settings PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}
     ${Protobuf_INCLUDE_DIRS}
 )
 
