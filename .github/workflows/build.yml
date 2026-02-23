@@ -158,7 +158,7 @@ jobs:
         run: |
           mkdir -p ${{ github.workspace }}/hazkey-server/build
           cd ${{ github.workspace }}/hazkey-server/build
-          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -G Ninja ..
+          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DHAZKEY_SERVER_SWIFT_LTO_MODE=full -G Ninja ..
           ninja -j$(nproc)
           env DESTDIR=${{ github.workspace }}/workdir ninja install
 
