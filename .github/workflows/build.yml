@@ -162,6 +162,10 @@ jobs:
           ninja -j$(nproc)
           env DESTDIR=${{ github.workspace }}/workdir ninja install
 
+      - name: Strip binaries
+        run: |
+          find ${{ github.workspace }}/workdir/usr/ -type f -print0 | xargs -0 file -i | grep -E "application/(x-pie-executable|x-sharedlib)" | cut -d: -f1 | xargs -I{} strip "{}"
+
       - name: Create tar.gz archive
         run: |
           cd ${{ github.workspace }}/workdir
